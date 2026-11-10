@@ -1,6 +1,7 @@
 /* Kit de sobrevivência: guarda a aplicação no telemóvel para abrir sem internet. */
 var CACHE = 'kit-sobrevivencia-v1';
-var BASE = ['./', 'index.html', 'manifest.webmanifest', 'kit-inicial.json',
+importScripts('avisos.js'); // a regra dos avisos de validade, a mesma que a aplicação usa
+var BASE = ['./', 'index.html', 'avisos.js', 'manifest.webmanifest', 'kit-inicial.json',
   'icones/icone-192.png', 'icones/icone-512.png', 'icones/icone-mascara-512.png', 'icones/apple-touch-icon.png'];
 var LETRAS = 'https://fonts.googleapis.com/css2?family=Saira+Semi+Condensed:wght@400;500;600;700&family=Saira+Stencil+One&display=swap';
 
@@ -58,5 +59,23 @@ self.addEventListener('fetch', function (e) {
       if (inicio) return inicio;
     }
     return new Response('', { status: 504, statusText: 'Sem rede' });
+  })());
+});
+
+/* Verificação de validades com a aplicação fechada. É o telemóvel que decide quando isto corre. */
+self.addEventListener('periodicsync', function (e) {
+  if (e.tag === 'validades') e.waitUntil(self.KitAvisos.verificar(self.registration));
+});
+
+/* Tocar na notificação abre a aplicação na lista de produtos. */
+self.addEventListener('notificationclick', function (e) {
+  e.notification.close();
+  e.waitUntil((async function () {
+    var janelas = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (var i = 0; i < janelas.length; i++) {
+      var c = janelas[i];
+      if (c.url.indexOf(self.registration.scope) === 0 && 'focus' in c) { c.postMessage({ ir: 'produtos' }); return c.focus(); }
+    }
+    return self.clients.openWindow('./#produtos');
   })());
 });

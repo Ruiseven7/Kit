@@ -86,6 +86,7 @@ main{flex:1;min-height:0;overflow-y:auto;padding:0 16px 104px;outline:none}
 /* Avisos de validade */
 .alerta{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;border:0;border-left:6px solid var(--critico);background:var(--critico-f);color:var(--tinta);padding:10px 12px;margin-bottom:8px;font-weight:600}
 .alerta.a-aviso{border-left-color:var(--aviso);background:var(--aviso-f)}
+.alerta.a-calmo{border-left-color:var(--tinta-2);background:var(--neutro-f)}
 .alerta span:last-child{font-weight:400;white-space:nowrap;text-decoration:underline}
 
 /* Filtros */
@@ -216,6 +217,7 @@ nav{padding-bottom:env(safe-area-inset-bottom)}
   <div id="aviso" role="status" aria-live="polite" hidden></div>
 </div>
 
+<script src="avisos.js"></script>
 <script>
 (function(){
 'use strict';
@@ -226,10 +228,11 @@ var CATS=[
 ];
 var catIdx={};CATS.forEach(function(c,i){catIdx[c[0]]=i;});
 var HASH={kit:'kit',falta:'falta-comprar',produtos:'produtos',dados:'dados'};
-var VERSAO='2.0 de 10/11/2026';
+var VERSAO='2.1 de 10/11/2026';
+var AV=self.KitAvisos||null,DIAS_6M=AV?AV.DIAS_6M:183; /* a regra dos 6 meses vem do avisos.js; 183 só serve de rede se esse ficheiro falhar */
 
 var S={kit:[],prod:[],estado:'a-abrir',tab:'kit',filtro:'tudo',busca:'',folha:null,
-       semRede:false,protegido:null,instalada:false,ultimaCopia:'',copia:null,aExportar:false};
+       semRede:false,protegido:null,instalada:false,ultimaCopia:'',copia:null,aExportar:false,fundo:null};
 
 var $=function(id){return document.getElementById(id);};
 var nf=new Intl.NumberFormat('pt-PT',{maximumFractionDigits:2});
@@ -261,7 +264,7 @@ function resumo(){
   var linhas=S.kit.map(function(k){var r=calc(k,m.get(k.id));if(r.est==='completo')c++;else if(r.est==='parcial')p++;else if(r.est==='falta')f++;else na++;return {k:k,r:r};});
   return {linhas:linhas,c:c,p:p,f:f,na:na,total:c+p+f};
 }
-function validades(){var cad=0,breve=0;S.prod.forEach(function(p){var n=dias(p.validade);if(n===null)return;if(n<0)cad++;else if(n<=30)breve++;});return {cad:cad,breve:breve};}
+function validades(){var cad=0,breve=0,seis=0;S.prod.forEach(function(p){var n=dias(p.validade);if(n===null)return;if(n<0)cad++;else if(n<=30)breve++;else if(n<=DIAS_6M)seis++;});return {cad:cad,breve:breve,seis:seis};}
 function chipVal(p){
   var n=dias(p.validade);
   if(n===null)return '<span class="chip c-neutro">Sem validade</span>';
@@ -306,6 +309,7 @@ function tabKit(){
   h+='<p class="legenda"><span class="l-ok">Completo</span><span class="l-parcial">Parcial</span><span>Em falta</span></p></header>'+cartaoInstalar();
   if(V.cad)h+='<button type="button" class="alerta" data-a="tab" data-tab="produtos"><span>'+V.cad+(V.cad===1?' produto fora de validade':' produtos fora de validade')+'</span><span>Ver</span></button>';
   if(V.breve)h+='<button type="button" class="alerta a-aviso" data-a="tab" data-tab="produtos"><span>'+V.breve+(V.breve===1?' produto caduca':' produtos caducam')+' nos próximos 30 dias</span><span>Ver</span></button>';
+  if(V.seis)h+='<button type="button" class="alerta a-calmo" data-a="tab" data-tab="produtos"><span>'+V.seis+(V.seis===1?' produto caduca':' produtos caducam')+' nos próximos 6 meses</span><span>Ver</span></button>';
   if(!S.kit.length)return h+'<div class="vazio"><b>A lista do kit está vazia.</b>Usa «Novo item» para começar a tua lista.</div><div class="accoes"><button type="button" class="btn sec" data-a="novo-item">Novo item na lista</button></div>';
   var nFalta=R.p+R.f;
   h+='<div class="filtros" role="group" aria-label="Filtrar a lista">'+[['tudo','Tudo ('+S.kit.length+')'],['falta','Por completar ('+nFalta+')'],['tenho','Completos ('+R.c+')']].map(function(f){return '<button type="button" class="filtro" data-a="filtro" data-f="'+f[0]+'" aria-pressed="'+(S.filtro===f[0])+'">'+f[1]+'</button>';}).join('')+'</div>';
@@ -354,7 +358,7 @@ function listaProdutos(){
   var ps=S.prod.filter(function(p){if(!t)return true;var k=S.kit.find(function(x){return x.id===p.kitId;});return ((p.nome||'')+' '+(p.descricao||'')+' '+(k?k.nome:'')).toLowerCase().indexOf(t)>=0;}).sort(ordVal);
   if(!ps.length)return '<div class="vazio"><b>Nenhum produto corresponde à pesquisa.</b>Experimenta outra palavra.</div>';
   var G=[['cad','Fora de validade',[]],['d30','Caducam nos próximos 30 dias',[]],['m6','Caducam nos próximos 6 meses',[]],['dep','Validade mais longa',[]],['sem','Sem validade',[]]];
-  ps.forEach(function(p){var n=dias(p.validade);G[n===null?4:n<0?0:n<=30?1:n<=183?2:3][2].push(p);});
+  ps.forEach(function(p){var n=dias(p.validade);G[n===null?4:n<0?0:n<=30?1:n<=DIAS_6M?2:3][2].push(p);});
   return G.filter(function(g){return g[2].length;}).map(function(g){return '<h2 class="grupo'+(g[0]==='cad'?' g-critico':'')+'">'+g[1]+' ('+g[2].length+')</h2><ul>'+g[2].map(linhaProd).join('')+'</ul>';}).join('');
 }
 function tabProdutos(){
@@ -372,11 +376,25 @@ function cartaoInstalar(){
   return '<div class="instalar"><b>Instala a aplicação neste telemóvel</b><p>No menu do navegador, escolhe «Instalar aplicação» ou «Adicionar ao ecrã principal».</p></div>';
 }
 function dataHora(iso){var d=new Date(iso);if(isNaN(d))return '';var z=function(n){return ('0'+n).slice(-2);};return z(d.getDate())+'/'+z(d.getMonth()+1)+'/'+d.getFullYear()+' às '+z(d.getHours())+':'+z(d.getMinutes());}
+function estadoNotif(){
+  if(!AV||typeof Notification==='undefined'||!('serviceWorker' in navigator)||!/^https?:$/.test(location.protocol))return 'sem';
+  return Notification.permission;
+}
+function fichaNotif(){
+  var e=estadoNotif(),h='<section class="ficha"><h2>Notificações de validade</h2>';
+  if(e==='sem')return h+'<p>Este navegador não permite notificações a esta aplicação.</p></section>';
+  if(e==='denied')return h+'<p class="f-aviso">As notificações estão bloqueadas.</p><p>Para as ligar, abre as definições do telemóvel, procura esta aplicação e permite as notificações.</p></section>';
+  if(e!=='granted')return h+'<p>A aplicação pode avisar-te quando um produto entra nos últimos 6 meses de validade.</p><div class="accoes"><button type="button" class="btn" data-a="notif-ligar">Activar notificações</button></div></section>';
+  h+='<p class="f-ok">Notificações activas.</p><p>Recebes um aviso, uma só vez, por cada produto que entre nos últimos 6 meses de validade ('+DIAS_6M+' dias).</p>';
+  h+='<p class="ajuda">'+(S.fundo===true?'O telemóvel verifica as validades de vez em quando com a aplicação fechada, mas é ele que decide quando, e deixa de o fazer se a aplicação ficar muito tempo sem ser aberta. A verificação certa é a que corre sempre que abres a aplicação.':'Neste telemóvel a verificação só corre quando abres a aplicação.')+'</p>';
+  return h+'<div class="accoes"><button type="button" class="btn sec" data-a="notif-teste">Enviar notificação de teste</button></div></section>';
+}
 function tabDados(){
   var nF=S.prod.filter(function(p){return idOk(p.fotoId);}).length,uc=S.ultimaCopia?dataHora(S.ultimaCopia):'';
   var h='<h1 class="titulo">Dados</h1><p class="lead">O stock e as fotografias ficam guardados só neste telemóvel. Nada é enviado para a internet.</p>'+cartaoInstalar();
   h+='<section class="ficha"><h2>Sem internet</h2><p class="'+(S.semRede?'f-ok':'f-aviso')+'">'+(S.semRede?'Pronta para abrir sem internet.':'Ainda não está pronta para abrir sem internet. Abre-a uma vez com ligação e espera uns segundos.')+'</p>'+
     (S.protegido===true?'<p>O navegador comprometeu-se a não apagar estes dados sozinho.</p>':S.protegido===false?'<p>O navegador pode apagar dados de páginas pouco usadas quando o telemóvel fica sem espaço. Instalar a aplicação e guardar cópias reduz esse risco.</p>':'')+'</section>';
+  h+=fichaNotif();
   h+='<section class="ficha"><h2>Cópia de segurança</h2><p>'+(uc?'Última cópia criada a '+uc+'.':'Ainda não criaste nenhuma cópia.')+'</p><p class="ajuda">Se apagares a aplicação ou os dados do navegador, o stock perde-se. A cópia é um ficheiro com a lista, os produtos e as fotografias, que podes guardar fora do telemóvel.</p><div class="accoes">'+
     '<button type="button" class="btn" data-a="exportar"'+(S.aExportar?' disabled':'')+'>'+(S.aExportar?'A criar a cópia…':'Guardar cópia de segurança')+'</button>';
   if(S.copia)h+='<div><p class="rot" style="margin-top:4px">A cópia escolhida tem '+S.copia.kit.length+' itens e '+S.copia.prod.length+' produtos'+(S.copia.data?', criada a '+dataHora(S.copia.data):'')+'. Repor substitui tudo o que está neste telemóvel.</p><div class="duas"><button type="button" class="btn perigo" data-a="repor">Sim, substituir</button><button type="button" class="btn sec" data-a="nao-repor">Não</button></div></div>';
@@ -556,7 +574,12 @@ async function guardarProduto(){
     catch(e){foto=null;fotoId='';nota=' A fotografia ficou guardada só em tamanho pequeno.';}
   }else if(F.semFoto){fotoId='';mini='';}
   var agora=new Date().toISOString();
-  var doc={id:F.id||novoId(),kitId:kitId,nome:nome,descricao:desc,quantidade:r2(q),validade:val||'',fotoId:fotoId,mini:mini,criadoEm:(F.orig&&F.orig.criadoEm)||agora,alteradoEm:agora};
+  /* Aviso dos 6 meses: se o produto já é guardado dentro desse prazo, avisa-se aqui no ecrã e fica marcado,
+     para não repetir em notificação. Se a validade mudar, a marca recomeça. */
+  var n6=dias(val||''),dentro6=n6!==null&&n6>=0&&n6<=DIAS_6M;
+  var marca=(F.orig&&F.orig.validade===(val||'')&&typeof F.orig.aviso6m==='string')?F.orig.aviso6m:'';
+  if(dentro6&&!marca)nota+=' Atenção: faltam menos de 6 meses para a validade.';
+  var doc={id:F.id||novoId(),kitId:kitId,nome:nome,descricao:desc,quantidade:r2(q),validade:val||'',fotoId:fotoId,mini:mini,criadoEm:(F.orig&&F.orig.criadoEm)||agora,alteradoEm:agora,aviso6m:dentro6?(marca||agora):''};
   var ok=await escrever(function(){return tx(['produtos','fotos'],function(l){if(foto)l('fotos').put(foto);if(antigo&&antigo!==fotoId)l('fotos').delete(antigo);l('produtos').put(doc);});});
   if(!ok){ocupar(false);return;}
   await recarregar();pedirProtecao();fechar();render();avisar('Produto guardado.'+nota);
@@ -682,6 +705,8 @@ document.addEventListener('click',function(e){
   else if(a==='nao-apagar'){var z2=$('zona-apagar');if(z2&&F)z2.innerHTML='<button type="button" class="btn perigo" data-a="pedir-apagar">'+(F.t==='produto'?'Apagar produto':'Apagar item da lista')+'</button>';}
   else if(a==='apagar'){if(F&&F.t==='produto')apagarProduto();else if(F&&F.t==='editar-item')apagarItem();}
   else if(a==='exportar')exportar();
+  else if(a==='notif-ligar')ligarNotif();
+  else if(a==='notif-teste')testeNotif();
   else if(a==='repor')repor();
   else if(a==='nao-repor'){S.copia=null;render();}
   else if(a==='tentar'){S.estado='a-abrir';render();iniciar();}
@@ -697,6 +722,7 @@ document.addEventListener('change',function(e){
 });
 document.addEventListener('input',function(e){if(e.target.id==='busca'){S.busca=e.target.value;var l=$('lista-prod');if(l)l.innerHTML=listaProdutos();}});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&S.folha&&!S.folha.ocupado)fechar();});
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')verificarAvisos();});
 window.addEventListener('hashchange',function(){var t=tabDoHash();if(t!==S.tab){S.tab=t;render();}});
 
 /* ---------- Dados guardados no telemóvel ---------- */
@@ -727,7 +753,7 @@ function limparItem(x){
 function limparProduto(p){
   if(!p||!chaveOk(p.id))return null;
   var q=num(p.quantidade);
-  return {id:p.id,kitId:txt(p.kitId,64),nome:txt(p.nome,80).trim()||'Sem nome',descricao:txt(p.descricao,600),quantidade:q===null||q<0?0:r2(q),validade:dataOk(p.validade)?p.validade:'',fotoId:idOk(p.fotoId)?p.fotoId:'',mini:miniOk(p.mini)?p.mini:'',criadoEm:txt(p.criadoEm,40),alteradoEm:txt(p.alteradoEm,40)};
+  return {id:p.id,kitId:txt(p.kitId,64),nome:txt(p.nome,80).trim()||'Sem nome',descricao:txt(p.descricao,600),quantidade:q===null||q<0?0:r2(q),validade:dataOk(p.validade)?p.validade:'',fotoId:idOk(p.fotoId)?p.fotoId:'',mini:miniOk(p.mini)?p.mini:'',criadoEm:txt(p.criadoEm,40),alteradoEm:txt(p.alteradoEm,40),aviso6m:txt(p.aviso6m,40)};
 }
 function ordKit(a,b){var x=a.cat in catIdx?catIdx[a.cat]:99,y=b.cat in catIdx?catIdx[b.cat]:99;return x-y||(num(a.ordem)||0)-(num(b.ordem)||0)||String(a.nome||'').localeCompare(String(b.nome||''),'pt');}
 async function recarregar(){var k=await ler('kit'),p=await ler('produtos');S.kit=k.sort(ordKit);S.prod=p;}
@@ -750,6 +776,43 @@ async function iniciar(){
   try{await semear();}catch(e){S.estado='erro-lista';render();return;}
   try{await recarregar();var u=await ler('meta','ultimaCopia');S.ultimaCopia=u&&typeof u.v==='string'?u.v:'';}catch(e){S.estado='erro-bd';render();return;}
   S.estado='pronto';render();verProtecao();
+  if(estadoNotif()==='granted'){ligarFundo();verificarAvisos();}
+}
+
+/* ---------- Notificações de validade ---------- */
+async function ligarFundo(){
+  var antes=S.fundo;
+  try{
+    var reg=await navigator.serviceWorker.ready;
+    if(!reg.periodicSync)S.fundo=false;
+    else{
+      var st=await navigator.permissions.query({name:'periodic-background-sync'});
+      if(st.state!=='granted')S.fundo=false;
+      else{await reg.periodicSync.register('validades',{minInterval:12*60*60*1000});S.fundo=true;}
+    }
+  }catch(e){S.fundo=false;}
+  if(antes!==S.fundo&&S.tab==='dados')render();
+}
+var aVerificar=false;
+async function verificarAvisos(){
+  if(aVerificar||S.estado!=='pronto'||estadoNotif()!=='granted')return;
+  aVerificar=true;
+  try{var reg=await navigator.serviceWorker.ready,n=await AV.verificar(reg);if(n){await recarregar();render();}}catch(e){}
+  aVerificar=false;
+}
+async function ligarNotif(){
+  if(estadoNotif()==='sem')return;
+  var r='default';try{r=await Notification.requestPermission();}catch(e){}
+  if(r==='granted'){await ligarFundo();avisar('Notificações activas.');verificarAvisos();}
+  else if(r==='denied')avisar('As notificações ficaram bloqueadas.');
+  render();
+}
+async function testeNotif(){
+  try{
+    var reg=await navigator.serviceWorker.ready;
+    await reg.showNotification('Kit de sobrevivência',{body:'Notificação de teste. É assim que a aplicação avisa das validades.',tag:'teste',icon:'icones/icone-192.png',data:{ir:'produtos'}});
+    avisar('Notificação de teste enviada.');
+  }catch(e){avisar('O telemóvel não deixou mostrar a notificação.');}
 }
 
 /* ---------- Instalação e uso sem internet ---------- */
@@ -759,6 +822,7 @@ window.addEventListener('appinstalled',function(){pedidoInstalar=null;S.instalad
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
   navigator.serviceWorker.register('sw.js').catch(function(){});
   navigator.serviceWorker.ready.then(function(){S.semRede=true;if(S.tab==='dados')render();}).catch(function(){});
+  navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.ir==='produtos'&&S.estado==='pronto')irPara('produtos');});
 }
 
 S.tab=tabDoHash();
