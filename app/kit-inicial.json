@@ -1,0 +1,52 @@
+[
+  {"id": "agua-engarrafada", "cat": "agua", "ordem": 10, "nome": "Água engarrafada", "min": 84, "max": 105, "unidade": "L", "unidade1": "L", "nota": "Mínimo de 84 L: 3 L por pessoa por dia (referência da UE). Por exemplo, 14 packs de 6 garrafas de 1,5 L. Até cerca de 105 L com a referência americana (1 galão por pessoa por dia), que dá margem para higiene."},
+  {"id": "pastilhas-purificacao", "cat": "agua", "ordem": 20, "nome": "Pastilhas de purificação de água", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": "Como reserva."},
+
+  {"id": "latas-peixe", "cat": "comida", "ordem": 10, "nome": "Latas de atum, sardinhas ou cavala", "min": 20, "max": 24, "unidade": "latas", "unidade1": "lata", "nota": ""},
+  {"id": "latas-leguminosas", "cat": "comida", "ordem": 20, "nome": "Latas de feijão, grão ou lentilhas já cozidas", "min": 14, "max": 16, "unidade": "latas", "unidade1": "lata", "nota": ""},
+  {"id": "latas-legumes-refeicoes", "cat": "comida", "ordem": 30, "nome": "Latas de legumes, sopa ou refeições prontas", "min": 10, "max": 12, "unidade": "latas", "unidade1": "lata", "nota": ""},
+  {"id": "bolachas-tostas-pao", "cat": "comida", "ordem": 40, "nome": "Bolachas, tostas ou pão de forma embalado", "min": 8, "max": 10, "unidade": "pacotes", "unidade1": "pacote", "nota": ""},
+  {"id": "manteiga-amendoim-doce", "cat": "comida", "ordem": 50, "nome": "Manteiga de amendoim, doce ou compota", "min": 3, "max": 4, "unidade": "frascos", "unidade1": "frasco", "nota": ""},
+  {"id": "frutos-secos", "cat": "comida", "ordem": 60, "nome": "Frutos secos e fruta desidratada", "min": 1.5, "max": 2, "unidade": "kg", "unidade1": "kg", "nota": ""},
+  {"id": "barras-cereais", "cat": "comida", "ordem": 70, "nome": "Barras de cereais ou energéticas", "min": 28, "max": 35, "unidade": "barras", "unidade1": "barra", "nota": ""},
+  {"id": "cereais", "cat": "comida", "ordem": 80, "nome": "Cereais", "min": 4, "max": 5, "unidade": "pacotes", "unidade1": "pacote", "nota": ""},
+  {"id": "leite-uht", "cat": "comida", "ordem": 90, "nome": "Leite UHT ou bebida vegetal", "min": 14, "max": 18, "unidade": "L", "unidade1": "L", "nota": ""},
+  {"id": "fruta-calda", "cat": "comida", "ordem": 100, "nome": "Fruta em calda ou compotas individuais", "min": 6, "max": null, "unidade": "latas", "unidade1": "lata", "nota": ""},
+  {"id": "arroz-massa", "cat": "comida", "ordem": 110, "nome": "Arroz ou massa de cozedura rápida", "min": 1, "max": null, "unidade": "pacotes", "unidade1": "pacote", "nota": "Só se tiver fogão de campismo."},
+  {"id": "abre-latas", "cat": "comida", "ordem": 120, "nome": "Abre-latas manual", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": "Se não houver latas de abertura fácil."},
+  {"id": "extras-conforto", "cat": "comida", "ordem": 130, "nome": "Extras de conforto", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": "Chocolate, chá, café solúvel, sal e açúcar."},
+
+  {"id": "primeiros-socorros", "cat": "saude", "ordem": 10, "nome": "Kit de primeiros socorros completo", "min": 1, "max": null, "unidade": "kits", "unidade1": "kit", "nota": ""},
+  {"id": "medicamentos-habituais", "cat": "saude", "ordem": 20, "nome": "Medicamentos de uso habitual", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": "Com reserva para pelo menos 7 dias."},
+  {"id": "analgesico-alergias-soro", "cat": "saude", "ordem": 30, "nome": "Analgésico e antipirético, medicação para alergias, soro fisiológico", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": ""},
+  {"id": "termometro", "cat": "saude", "ordem": 40, "nome": "Termómetro", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": ""},
+  {"id": "mascaras", "cat": "saude", "ordem": 50, "nome": "Máscaras", "min": 8, "max": 12, "unidade": "máscaras", "unidade1": "máscara", "nota": ""},
+
+  {"id": "lanternas", "cat": "luz", "ordem": 10, "nome": "Lanternas", "min": 2, "max": null, "unidade": "lanternas", "unidade1": "lanterna", "nota": ""},
+  {"id": "lanternas-cabeca", "cat": "luz", "ordem": 20, "nome": "Lanternas de cabeça", "min": 4, "max": null, "unidade": "lanternas", "unidade1": "lanterna", "nota": ""},
+  {"id": "pilhas-reserva", "cat": "luz", "ordem": 30, "nome": "Pilhas de reserva", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": "Para tudo o que as use: pelo menos 2 jogos por aparelho."},
+  {"id": "radio", "cat": "luz", "ordem": 40, "nome": "Rádio de pilhas ou de manivela", "min": 1, "max": null, "unidade": "rádios", "unidade1": "rádio", "nota": ""},
+  {"id": "powerbanks", "cat": "luz", "ordem": 50, "nome": "Powerbanks carregados e cabos", "min": 2, "max": 4, "unidade": "powerbanks", "unidade1": "powerbank", "nota": ""},
+  {"id": "isqueiro-fosforos-velas", "cat": "luz", "ordem": 60, "nome": "Isqueiro ou fósforos e algumas velas", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": "Velas usadas com cuidado."},
+  {"id": "fogao-campismo", "cat": "luz", "ordem": 70, "nome": "Fogão de campismo com gás", "min": 1, "max": null, "unidade": "fogões", "unidade1": "fogão", "nota": "Só se souber usá-lo em segurança e com ventilação (nunca em espaços fechados)."},
+
+  {"id": "mantas-termicas", "cat": "abrigo", "ordem": 10, "nome": "Mantas térmicas ou cobertores", "min": 4, "max": null, "unidade": "mantas", "unidade1": "manta", "nota": ""},
+  {"id": "roupa-quente", "cat": "abrigo", "ordem": 20, "nome": "Roupa quente e resistente para cada pessoa", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": ""},
+  {"id": "fita-canivete", "cat": "abrigo", "ordem": 30, "nome": "Fita adesiva e um canivete ou multiferramentas", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": ""},
+  {"id": "jogos-livros", "cat": "abrigo", "ordem": 40, "nome": "Jogos, livros ou cartas para as crianças", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": ""},
+
+  {"id": "papel-higienico", "cat": "higiene", "ordem": 10, "nome": "Papel higiénico", "min": 8, "max": 12, "unidade": "rolos", "unidade1": "rolo", "nota": ""},
+  {"id": "toalhetes-humidos", "cat": "higiene", "ordem": 20, "nome": "Toalhetes húmidos", "min": 4, "max": 6, "unidade": "pacotes", "unidade1": "pacote", "nota": ""},
+  {"id": "desinfetante-maos", "cat": "higiene", "ordem": 30, "nome": "Desinfetante de mãos", "min": 2, "max": 3, "unidade": "frascos", "unidade1": "frasco", "nota": ""},
+  {"id": "sacos-lixo", "cat": "higiene", "ordem": 40, "nome": "Sacos do lixo (e alguns sacos grandes)", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": ""},
+  {"id": "sabao-pasta-escovas", "cat": "higiene", "ordem": 50, "nome": "Sabão, pasta e escovas de dentes", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": ""},
+  {"id": "higiene-intima", "cat": "higiene", "ordem": 60, "nome": "Produtos de higiene íntima", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": "Se necessário."},
+
+  {"id": "copias-documentos", "cat": "docs", "ordem": 10, "nome": "Cópias de documentos importantes", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": "Cartão de cidadão, seguros e receitas, numa bolsa impermeável."},
+  {"id": "dinheiro-notas", "cat": "docs", "ordem": 20, "nome": "Dinheiro em notas pequenas", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": "Os pagamentos eletrónicos podem falhar."},
+  {"id": "contactos-emergencia", "cat": "docs", "ordem": 30, "nome": "Lista de contactos de emergência em papel", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": ""},
+
+  {"id": "bebe", "cat": "familia", "ordem": 10, "nome": "Bebé: fórmula, fraldas, toalhetes", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": "Só se se aplicar à família."},
+  {"id": "animais", "cat": "familia", "ordem": 20, "nome": "Animais: comida e água para 7 dias", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": "Só se se aplicar à família."},
+  {"id": "dietas-especiais", "cat": "familia", "ordem": 30, "nome": "Dietas especiais, alergias ou medicação crónica", "min": null, "max": null, "unidade": "un", "unidade1": "un", "nota": "Só se se aplicar à família."}
+]

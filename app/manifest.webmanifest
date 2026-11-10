@@ -1,0 +1,17 @@
+{
+  "name": "Kit de sobrevivência",
+  "short_name": "Kit",
+  "description": "Stock do kit de sobrevivência: o que há, o que falta e o que está a caducar.",
+  "lang": "pt-PT",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#E8EBE7",
+  "theme_color": "#BF450C",
+  "icons": [
+    { "src": "icones/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icones/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icones/icone-mascara-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
